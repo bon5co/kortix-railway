@@ -65,6 +65,18 @@ wait_for() {
   fi
 }
 
+# Wait until host:port accepts a TCP connection. A template deploy starts every service at once, so a service that needs the
+# database must not crash while the database's private name does not resolve yet (the restart policy runs out in seconds).
+wait_tcp() {
+  if command -v nc >/dev/null 2>&1; then
+    until nc -z -w 2 "$1" "$2" >/dev/null 2>&1; do sleep 2; done
+  elif command -v bun >/dev/null 2>&1; then
+    until bun -e 'require("net").connect(+process.argv[2],process.argv[1]).on("connect",()=>process.exit(0)).on("error",()=>process.exit(1))' "$1" "$2"; do sleep 2; done
+  else
+    until node -e 'require("net").connect(+process.argv[2],process.argv[1]).on("connect",()=>process.exit(0)).on("error",()=>process.exit(1))' "$1" "$2"; do sleep 2; done
+  fi
+}
+
 case "$role" in
   db)
     need_seed; need_jwt_secret
@@ -87,6 +99,8 @@ case "$role" in
     need_seed; need_jwt_secret
     export GOTRUE_JWT_SECRET="$JWT_SECRET"
     export GOTRUE_DB_DATABASE_URL="$(db_url supabase_auth_admin)"
+    log "waiting for db at $DB_HOST:5432"
+    wait_tcp "$DB_HOST" 5432
     # No mail server: accounts are confirmed on creation, and nobody can sign up (see the hook below).
     export GOTRUE_HOOK_SEND_EMAIL_ENABLED=false
     export GOTRUE_MAILER_AUTOCONFIRM=true
@@ -101,6 +115,8 @@ case "$role" in
     need_seed; need_jwt_secret
     export ANON_KEY="$(anon_key)" SERVICE_KEY="$(service_key)" AUTH_JWT_SECRET="$JWT_SECRET"
     export DATABASE_URL="$(db_url supabase_storage_admin)"
+    log "waiting for db at $DB_HOST:5432"
+    wait_tcp "$DB_HOST" 5432
     export POSTGREST_URL="http://$REST_HOST:3000"
     export S3_PROTOCOL_ACCESS_KEY_ID="${S3_PROTOCOL_ACCESS_KEY_ID:-$(derive s3-access-key-id | cut -c1-32)}"
     export S3_PROTOCOL_ACCESS_KEY_SECRET="${S3_PROTOCOL_ACCESS_KEY_SECRET:-$(derive s3-access-key-secret)}"
