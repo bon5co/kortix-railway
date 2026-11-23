@@ -1,0 +1,12 @@
+  ## Railway healthcheck (added by the Railway wrapper)
+  - name: railway-healthz
+    url: http://127.0.0.1:1/
+    routes:
+      - name: railway-healthz
+        paths:
+          - /healthz
+    plugins:
+      - name: request-termination
+        config:
+          status_code: 200
+          message: ok

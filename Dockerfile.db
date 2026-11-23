@@ -1,0 +1,17 @@
+# upstream: none Supabase Postgres image that the Kortix stack runs on, not the Kortix app
+FROM supabase/postgres:17.6.1.136@sha256:f371b5f3f2ac0a05703f33d6e6134515fb2498cab708fb948a0aeb7481467c00
+
+USER root
+# Kortix's own database bootstrap (what the blueprint writes into /docker-entrypoint-initdb.d before first boot).
+COPY assets/db-initdb/ /docker-entrypoint-initdb.d/
+ENV KORTIX_ROLE=db \
+    PGDATA=/var/lib/postgresql/data/pgdata \
+    POSTGRES_HOST=/var/run/postgresql \
+    POSTGRES_PORT=5432 \
+    PGPORT=5432 \
+    POSTGRES_DB=postgres \
+    PGDATABASE=postgres \
+    JWT_EXPIRY=3600
+COPY railway-boot.sh /usr/local/bin/railway-boot.sh
+RUN chmod 755 /usr/local/bin/railway-boot.sh
+ENTRYPOINT ["/bin/sh", "/usr/local/bin/railway-boot.sh"]

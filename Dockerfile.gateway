@@ -1,0 +1,7 @@
+# upstream: kortix-ai/suna
+FROM kortix/kortix-gateway:0.16.4@sha256:e45f1ded5a6963aa7a0bdd88c06fbb1184a7e493e435cefdf1053eea9d7e022f
+
+ENV KORTIX_ROLE=gateway
+COPY railway-boot.sh /usr/local/bin/railway-boot.sh
+RUN chmod 755 /usr/local/bin/railway-boot.sh
+ENTRYPOINT ["/bin/sh", "/usr/local/bin/railway-boot.sh"]

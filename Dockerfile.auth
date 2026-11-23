@@ -1,0 +1,40 @@
+# upstream: none Supabase GoTrue image that the Kortix stack runs on, not the Kortix app
+FROM supabase/gotrue:v2.189.0@sha256:385184459f57569c54c25209f51f3b2be99ddd7c4ce9e3555b5d3eea8447b7cf
+
+ENV KORTIX_ROLE=auth \
+    GOTRUE_API_HOST=:: \
+    GOTRUE_API_PORT=9999 \
+    GOTRUE_DB_DRIVER=postgres \
+    GOTRUE_URI_ALLOW_LIST=kortix://** \
+    GOTRUE_DISABLE_SIGNUP=false \
+    GOTRUE_JWT_ADMIN_ROLES=service_role \
+    GOTRUE_JWT_AUD=authenticated \
+    GOTRUE_JWT_DEFAULT_GROUP_NAME=authenticated \
+    GOTRUE_JWT_EXP=3600 \
+    GOTRUE_SECURITY_REFRESH_TOKEN_ROTATION_ENABLED=true \
+    GOTRUE_SECURITY_REFRESH_TOKEN_REUSE_INTERVAL=0 \
+    GOTRUE_EXTERNAL_EMAIL_ENABLED=true \
+    GOTRUE_EXTERNAL_ANONYMOUS_USERS_ENABLED=false \
+    GOTRUE_EXTERNAL_PHONE_ENABLED=false \
+    GOTRUE_SMS_AUTOCONFIRM=false \
+    GOTRUE_SAML_ENABLED=false \
+    GOTRUE_SMTP_ADMIN_EMAIL=admin@localhost \
+    GOTRUE_SMTP_HOST=localhost \
+    GOTRUE_SMTP_PORT=587 \
+    GOTRUE_SMTP_USER=unused \
+    GOTRUE_SMTP_PASS=unused \
+    GOTRUE_SMTP_SENDER_NAME=Kortix \
+    GOTRUE_MAILER_URLPATHS_INVITE=/auth/v1/verify \
+    GOTRUE_MAILER_URLPATHS_CONFIRMATION=/auth/v1/verify \
+    GOTRUE_MAILER_URLPATHS_RECOVERY=/auth/v1/verify \
+    GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE=/auth/v1/verify \
+    GOTRUE_RATE_LIMIT_HEADER=X-Forwarded-For \
+    GOTRUE_RATE_LIMIT_EMAIL_SENT=30 \
+    GOTRUE_RATE_LIMIT_SMS_SENT=30 \
+    GOTRUE_RATE_LIMIT_VERIFY=30 \
+    GOTRUE_RATE_LIMIT_TOKEN_REFRESH=150 \
+    GOTRUE_RATE_LIMIT_OTP=30 \
+    GOTRUE_RATE_LIMIT_ANONYMOUS_USERS=30
+COPY railway-boot.sh /usr/local/bin/railway-boot.sh
+RUN chmod 755 /usr/local/bin/railway-boot.sh
+ENTRYPOINT ["/bin/sh", "/usr/local/bin/railway-boot.sh"]

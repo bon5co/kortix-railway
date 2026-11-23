@@ -1,0 +1,23 @@
+# upstream: kortix-ai/suna
+FROM kortix/kortix-api:0.16.4@sha256:8dce366466a86587a1525f38684c2c17307545e14447c167aa4a758c2a35f97f
+
+ENV KORTIX_ROLE=api \
+    KORTIX_VERSION=0.16.4 \
+    ALLOWED_SANDBOX_PROVIDERS=platinum \
+    PLATINUM_API_URL=https://api.platinum.dev \
+    DAYTONA_SERVER_URL=https://app.daytona.io/api \
+    DAYTONA_TARGET=us \
+    ENTERPRISE_LICENSE_AVAILABLE=false \
+    KORTIX_BILLING_INTERNAL_ENABLED=false \
+    KORTIX_RESTRICT_ACCOUNT_CREATION=true \
+    KORTIX_PUBLIC_AUTH_PROVIDERS= \
+    KORTIX_ROUTER_INTERNAL_ENABLED=false \
+    MANAGED_GIT_PROVIDER=github \
+    CONNECTOR_AUTH_PROVIDER=composio \
+    PIPEDREAM_ENVIRONMENT=production \
+    KORTIX_CONFIG_ARCHIVE_S3_BUCKET=kortix-config-releases \
+    KORTIX_CONFIG_ARCHIVE_S3_REGION=local \
+    KORTIX_CONFIG_ARCHIVE_S3_FORCE_PATH_STYLE=true
+COPY railway-boot.sh /usr/local/bin/railway-boot.sh
+RUN chmod 755 /usr/local/bin/railway-boot.sh
+ENTRYPOINT ["/bin/sh", "/usr/local/bin/railway-boot.sh"]

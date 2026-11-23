@@ -1,0 +1,17 @@
+# upstream: none Supabase Storage image that the Kortix stack runs on, not the Kortix app
+FROM supabase/storage-api:v1.60.4@sha256:c8eb9858eafec891a97c27125470aaad54703c3f4eb4d55ca7f1bf6c6411febf
+
+ENV KORTIX_ROLE=storage \
+    SERVER_HOST=:: \
+    SERVER_PORT=5000 \
+    REQUEST_ALLOW_X_FORWARDED_PATH=true \
+    FILE_SIZE_LIMIT=52428800 \
+    STORAGE_BACKEND=file \
+    GLOBAL_S3_BUCKET=kortix-storage \
+    FILE_STORAGE_BACKEND_PATH=/var/lib/storage \
+    TENANT_ID=kortix-default \
+    REGION=local \
+    ENABLE_IMAGE_TRANSFORMATION=false
+COPY railway-boot.sh /usr/local/bin/railway-boot.sh
+RUN chmod 755 /usr/local/bin/railway-boot.sh
+ENTRYPOINT ["/bin/sh", "/usr/local/bin/railway-boot.sh"]
