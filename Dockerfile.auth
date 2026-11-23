@@ -35,6 +35,5 @@ ENV KORTIX_ROLE=auth \
     GOTRUE_RATE_LIMIT_TOKEN_REFRESH=150 \
     GOTRUE_RATE_LIMIT_OTP=30 \
     GOTRUE_RATE_LIMIT_ANONYMOUS_USERS=30
-COPY railway-boot.sh /usr/local/bin/railway-boot.sh
-RUN chmod 755 /usr/local/bin/railway-boot.sh
+COPY --chmod=755 railway-boot.sh /usr/local/bin/railway-boot.sh
 ENTRYPOINT ["/bin/sh", "/usr/local/bin/railway-boot.sh"]

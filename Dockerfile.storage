@@ -12,6 +12,5 @@ ENV KORTIX_ROLE=storage \
     TENANT_ID=kortix-default \
     REGION=local \
     ENABLE_IMAGE_TRANSFORMATION=false
-COPY railway-boot.sh /usr/local/bin/railway-boot.sh
-RUN chmod 755 /usr/local/bin/railway-boot.sh
+COPY --chmod=755 railway-boot.sh /usr/local/bin/railway-boot.sh
 ENTRYPOINT ["/bin/sh", "/usr/local/bin/railway-boot.sh"]

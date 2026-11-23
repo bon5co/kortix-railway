@@ -9,9 +9,8 @@ ENV KORTIX_ROLE=kong \
     KONG_DNS_NOT_FOUND_TTL=1 \
     KONG_PLUGINS=request-transformer,cors,key-auth,acl,basic-auth,request-termination,ip-restriction,post-function \
     KONG_NGINX_PROXY_PROXY_BUFFER_SIZE=160k \
-    "KONG_NGINX_PROXY_PROXY_BUFFERS=64 160k" \
-    "KONG_PROXY_ACCESS_LOG=/dev/stdout combined" \
+    KONG_NGINX_PROXY_PROXY_BUFFERS="64 160k" \
+    KONG_PROXY_ACCESS_LOG="/dev/stdout combined" \
     KONG_NGINX_WORKER_PROCESSES=2
-COPY railway-boot.sh /usr/local/bin/railway-boot.sh
-RUN chmod 755 /usr/local/bin/railway-boot.sh
+COPY --chmod=755 railway-boot.sh /usr/local/bin/railway-boot.sh
 ENTRYPOINT ["/bin/sh", "/usr/local/bin/railway-boot.sh"]

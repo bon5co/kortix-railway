@@ -18,6 +18,5 @@ ENV KORTIX_ROLE=api \
     KORTIX_CONFIG_ARCHIVE_S3_BUCKET=kortix-config-releases \
     KORTIX_CONFIG_ARCHIVE_S3_REGION=local \
     KORTIX_CONFIG_ARCHIVE_S3_FORCE_PATH_STYLE=true
-COPY railway-boot.sh /usr/local/bin/railway-boot.sh
-RUN chmod 755 /usr/local/bin/railway-boot.sh
+COPY --chmod=755 railway-boot.sh /usr/local/bin/railway-boot.sh
 ENTRYPOINT ["/bin/sh", "/usr/local/bin/railway-boot.sh"]
